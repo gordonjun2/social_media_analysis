@@ -1,0 +1,17 @@
+pandas
+requests
+beautifulsoup4
+Pillow
+wordcloud
+matplotlib
+spacy
+urllib3==1.26.15
+fsspec
+huggingface_hub
+pyarrow
+fastparquet
+datasets
+nltk
+torch
+transformers==4.36.2
+sentencepiece
