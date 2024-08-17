@@ -4,29 +4,25 @@ import pandas as pd
 from urllib.request import urlopen
 import json
 from bs4 import BeautifulSoup
-from urllib.error import HTTPError
-import requests
-from PIL import Image
 import re
-import random
-from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
-import matplotlib.pyplot as plt
 import os
-import openai
-import spacy
-from collections import Counter
 import warnings
 import pickle
 import sys
 import re
 import unicodedata
+import ssl
 
 pd.set_option('display.max_rows', None)
 warnings.filterwarnings("ignore")
 
+ssl_context = ssl.create_default_context()
+ssl_context.check_hostname = False
+ssl_context.verify_mode = ssl.CERT_NONE
+
 
 def get_jsonparsed_data(url):
-    response = urlopen(url)
+    response = urlopen(url, context=ssl_context)
     data = response.read().decode("utf-8")
     return json.loads(data)
 
@@ -62,7 +58,7 @@ def load_df(file_path):
     return dataframe
 
 
-def load_df_range(source, board, start_date, end_date):
+def load_df_range(base_dir_path, source, board, start_date, end_date):
     """
     Load dataframe that is within the specified date range.
     """
@@ -72,14 +68,14 @@ def load_df_range(source, board, start_date, end_date):
 
         return None
     elif source == '4chan':
-        dir_path = './saved_data/4chan/{}'.format(board)
+        dir_path = '{}/4chan/{}'.format(base_dir_path, board)
         merged_df = pd.DataFrame(columns=[
             'Date Time', 'Name', 'ID', 'Thread Subject', 'Comment',
             'Thread Post Number', 'Post Number', 'Thread Replies',
             'Is Thread OP'
         ])
     else:
-        dir_path = './saved_data/hugging_face'
+        dir_path = '{}/hugging_face'.format(base_dir_path)
         merged_df = pd.DataFrame(columns=['Date Time', 'Comment'])
 
     date_format = '%Y-%m-%d'
@@ -273,6 +269,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     dir_path = './saved_data/4chan/{}'.format(board)
+    files_to_delete = []
     dataframe = pd.DataFrame(columns=[
         'Date Time', 'Name', 'ID', 'Thread Subject', 'Comment',
         'Thread Post Number', 'Post Number', 'Thread Replies', 'Is Thread OP'
@@ -282,7 +279,6 @@ if __name__ == "__main__":
         files = os.listdir(dir_path)
         if files:
             expected_columns = set(dataframe.columns)
-            files_to_delete = []
 
             for file in files:
                 if not file.endswith('.pkl'):
@@ -379,8 +375,8 @@ if __name__ == "__main__":
 
     print("\n")
 
-    save_df(dataframe, dir_path, start_datetime, end_datetime)
     delete_files(files_to_delete)
+    save_df(dataframe, dir_path, start_datetime, end_datetime)
 
     print(
         "Data downloaded successfully. Please use crypto-sentiment-on-chart.ipynb or 4chan-summariser.ipynb next.\n"

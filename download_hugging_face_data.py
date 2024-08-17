@@ -118,6 +118,7 @@ def download_hugging_face_datasets():
     # Clean text and sort by date time
     hugging_face_df['Comment'] = hugging_face_df['Comment'].apply(clean_text)
     hugging_face_df = hugging_face_df[hugging_face_df['Comment'] != '']
+    hugging_face_df['Date Time'] = pd.to_datetime(hugging_face_df['Date Time'])
     hugging_face_df = hugging_face_df.sort_values(
         by='Date Time', ascending=True).reset_index(drop=True)
     start_datetime = hugging_face_df.iloc[0]['Date Time']
