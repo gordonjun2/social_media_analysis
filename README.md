@@ -8,11 +8,11 @@ This repository contains a collection of Jupyter notebooks designed to analyse s
 ### Included Analyses
 Please look into the respective Jupyter notebook for more explanations and details.
 
-1. **4chan Summariser** (*4chan-summariser.ipynb*)
+1. **Social Media Summariser** (*social-media-summariser.ipynb*)
 
-This notebook demonstrates a comprehensive analysis of recent posts from a selected 4chan board using the 4chan API. It focuses on scraping the latest discussions and extracting insights to create a word cloud of the most frequently mentioned terms. Additionally, the notebook employs a Hugging Face language model to summarise the content.
+This notebook demonstrates a comprehensive analysis of social media posts from selected social media source, such as 4chan, Twitter (Hugging Face dataset), and Telegram. It focuses on retrieving data to create a word cloud of the most frequently mentioned terms. Additionally, the notebook employs a Hugging Face language model to summarise the content.
 
-The primary goal is to analyze sentiment and trends within the cryptocurrency community on 4chan's Business and Finance board. However, the approach can be extended to other topics and boards. By integrating these insights with various trading strategies, users can enhance their understanding of market sentiment and potentially improve their trading decisions.
+The primary goal is to analyze sentiment and trends within the cryptocurrency communities. By integrating these insights with various trading strategies, users can enhance their understanding of market sentiment and potentially improve their trading decisions.
 <br>
 <br>
 
@@ -40,6 +40,10 @@ The primary goal is to analyze sentiment and trends within the cryptocurrency co
         - [rittik9/Pegasus-finetuned-tweet-summary](https://huggingface.co/rittik9/Pegasus-finetuned-tweet-summary)
         - [mrm8488/bert-small2bert-small-finetuned-cnn_daily_mail-summarization](https://huggingface.co/mrm8488/bert-small2bert-small-finetuned-cnn_daily_mail-summarization)
         - [Mr-Vicky-01/Bart-Finetuned-conversational-summarization](https://huggingface.co/Mr-Vicky-01/Bart-Finetuned-conversational-summarization)
+- Pyrogram for Telegram API
+    - [Documentation](https://docs.pyrogram.org/)
+    - TELEGRAM API KEYS REQUIRED
+        - Refer to [here](https://core.telegram.org/api/obtaining_api_id)
 <br>
 
 ### **Installation**
@@ -87,6 +91,30 @@ The primary goal is to analyze sentiment and trends within the cryptocurrency co
     ```
 - The data will be downloaded as *.pkl* file in the ***saved_data/hugging_face/*** directory.
 
+#### Telegram Data Download
+- Rename private keys file.
+    ```
+    mv private_template.ini private.ini
+    ```
+- Obtain Telegram *api_id* and *api_hash* and paste it into the private keys file.
+    - TELEGRAM_API_KEY: *api_id*
+    - TELEGRAM_HASH: *api_hash*
+- Save the private keys file.
+- Open up the ```config.py``` and modify the *CHAT_ID_LIST* to contain the Chat IDs of the channel you want to scrape the data from.
+    - To get the Chat ID of the channel, use Telegram Web and click on the channel.
+    - The web URL contains the Chat ID.
+        ```
+        eg.
+        https://web.telegram.org/a/#-1002081438683
+
+        -1002081438683 is the Chat ID.
+        ```
+- Run the command below to download the data:
+    ```
+    python scrape_telegram_data.py
+    ```
+- The data will be downloaded as *.pkl* file in the ***saved_data/telegram/*** directory.
+
 #### Analysis
 - After the data is downloaded, you can start to use the Jupyter notebooks.
 - To open the Jupyter notebook, run
@@ -94,7 +122,7 @@ The primary goal is to analyze sentiment and trends within the cryptocurrency co
     jupyter notebook <selected .ipynb>
 
     Eg.
-    jupyter notebook 4chan-summariser.ipynb
+    jupyter notebook social-media-summariser.ipynb
     ```
 - Continue to follow the instructions and explanations in the respective notebook to perform the analysis.
 - To execute the cell in the notebook, press 'SHIFT' + 'ENTER'.

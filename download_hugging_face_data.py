@@ -134,6 +134,6 @@ def download_hugging_face_datasets():
 print("\n")
 download_hugging_face_datasets()
 print(
-    "Data downloaded successfully. Please use crypto-sentiment-on-chart.ipynb or 4chan-summariser.ipynb next."
+    "Data downloaded successfully. Please use crypto-sentiment-on-chart.ipynb or social-media-summariser.ipynb next."
 )
 print("\n")

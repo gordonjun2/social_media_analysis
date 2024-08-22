@@ -58,25 +58,30 @@ def load_df(file_path):
     return dataframe
 
 
-def load_df_range(base_dir_path, source, board, start_date, end_date):
+def load_df_range(dir_path, source, start_date, end_date):
     """
     Load dataframe that is within the specified date range.
     """
 
-    if source not in ['4chan', 'hugging_face']:
-        print("Invalid source. Please enter '4chan' or 'hugging_face'.")
+    if source not in ['4chan', 'hugging_face', 'telegram']:
+        print(
+            "Invalid source. Please enter '4chan', 'hugging_face', or 'telegram'."
+        )
 
         return None
     elif source == '4chan':
-        dir_path = '{}/4chan/{}'.format(base_dir_path, board)
         merged_df = pd.DataFrame(columns=[
             'Date Time', 'Name', 'ID', 'Thread Subject', 'Comment',
             'Thread Post Number', 'Post Number', 'Thread Replies',
             'Is Thread OP'
         ])
-    else:
-        dir_path = '{}/hugging_face'.format(base_dir_path)
+    elif source == 'hugging_face':
         merged_df = pd.DataFrame(columns=['Date Time', 'Comment'])
+    else:
+        merged_df = pd.DataFrame(columns=[
+            'Date Time', 'Comment UUID', 'Chat ID', 'Chat Title', 'User ID',
+            'Username', 'Comment'
+        ])
 
     date_format = '%Y-%m-%d'
     datetime_format = '%Y-%m-%d %H:%M:%S'
@@ -126,6 +131,10 @@ def load_df_range(base_dir_path, source, board, start_date, end_date):
                 merged_df = merged_df.drop_duplicates(
                     subset='Post Number'
                 )  # Drop rows with duplicated 'Post Number'
+            elif source == 'telegram':
+                merged_df = merged_df.drop_duplicates(
+                    subset='Comment UUID'
+                )  # Drop rows with duplicated 'Comment UUID'
 
             merged_df = merged_df[
                 (merged_df['Date Time'] >= parsed_input_start_datetime)
@@ -137,13 +146,13 @@ def load_df_range(base_dir_path, source, board, start_date, end_date):
 
         else:
             print(
-                "\nNo files found in the selected directory {}. Please run 'data_manager.py' or 'download_hugging_face_data.py' to generate the data."
+                "\nNo files found in the selected directory {}. Please run 'data_manager.py', 'download_hugging_face_data.py', or 'scrape_telegram_data.py' to generate the data."
                 .format(dir_path))
 
             return None
     else:
         print(
-            "\nNo files found in the selected directory {}. Please run 'data_manager.py' or 'download_hugging_face_data.py' to generate the data."
+            "\nNo files found in the selected directory {}. Please run 'data_manager.py', 'download_hugging_face_data.py', or 'scrape_telegram_data.py' to generate the data."
             .format(dir_path))
 
         return None
@@ -379,5 +388,5 @@ if __name__ == "__main__":
     save_df(dataframe, dir_path, start_datetime, end_datetime)
 
     print(
-        "Data downloaded successfully. Please use crypto-sentiment-on-chart.ipynb or 4chan-summariser.ipynb next.\n"
+        "Data downloaded successfully. Please use crypto-sentiment-on-chart.ipynb or social-media-summariser.ipynb next.\n"
     )
