@@ -36,7 +36,7 @@ def get_boards_info():
 
 def save_df(dataframe, dir_path, start_datetime, end_datetime):
     """
-    Save 4chan's posts dataframe.
+    Save dataframe.
     """
 
     cached_file_path = '{}/{}_{}.pkl'.format(dir_path, start_datetime,
@@ -49,7 +49,7 @@ def save_df(dataframe, dir_path, start_datetime, end_datetime):
 
 def load_df(file_path):
     """
-    Load 4chan's posts dataframe.
+    Load dataframe.
     """
 
     with open(file_path, 'rb') as file:
