@@ -36,10 +36,10 @@ def update_save_dataframe(dataframe, new_batch_dataframe, dir_path,
                 files_to_delete.append(file_path)
 
     delete_files(files_to_delete)
+    save_df(dataframe, dir_path, start_datetime, end_datetime)
     print("Saved {}'s chat data from {} - {}".format(chat_title,
                                                      start_datetime,
                                                      end_datetime))
-    save_df(dataframe, dir_path, start_datetime, end_datetime)
     print("\n")
     files_to_delete = []
 

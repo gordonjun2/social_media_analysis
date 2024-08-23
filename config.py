@@ -16,6 +16,8 @@ CHAT_ID_LIST = [
     -1001809898162, -1001718338599, -1001559038987, -1001848837618,
     -1002062690940
 ]
+
+CHAT_ID_TO_GET_MEMBERS_LIST = [-1002081438683, -1002143108337]
 '''
     ~~~Examples of Crypto-related Channels and their Chat IDs~~~
     Anteater's Amazon: -1002019095590
@@ -31,4 +33,6 @@ CHAT_ID_LIST = [
     Noodles Trading: -1001559038987
     Crypto Narratives: -1001848837618
     Magimaxxing: -1002062690940
+    POPCAT: -1002081438683
+    NUB: -1002143108337
 '''

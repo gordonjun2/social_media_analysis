@@ -39,8 +39,8 @@ def save_df(dataframe, dir_path, start_datetime, end_datetime):
     Save dataframe.
     """
 
-    cached_file_path = '{}/{}_{}.pkl'.format(dir_path, start_datetime,
-                                             end_datetime)
+    cached_file_path = '{}/comments_{}_{}.pkl'.format(dir_path, start_datetime,
+                                                      end_datetime)
 
     os.makedirs(dir_path, exist_ok=True)
     with open(cached_file_path, 'wb') as file:
@@ -237,8 +237,6 @@ def delete_files(file_list):
         except Exception as e:
             print("Error deleting {}: {}".format(file_path, e))
 
-    print("\n")
-
 
 if __name__ == "__main__":
 
@@ -386,6 +384,7 @@ if __name__ == "__main__":
 
     delete_files(files_to_delete)
     save_df(dataframe, dir_path, start_datetime, end_datetime)
+    print("\n")
 
     print(
         "Data downloaded successfully. Please use crypto-sentiment-on-chart.ipynb or social-media-summariser.ipynb next.\n"
