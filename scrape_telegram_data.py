@@ -66,7 +66,13 @@ app = Client("text_scraper",
 async def main(chat_id_list):
     async with app:
         for chat_id in chat_id_list:
-            chat_info = await app.get_chat(chat_id)
+            try:
+                chat_info = await app.get_chat(chat_id)
+            except Exception as e:
+                print(
+                    "\nUnable to scraping chat data from {} ({}) due to {}...\n"
+                    .format(chat_title, chat_id, e))
+                continue
             chat_title = chat_info.title
 
             print("\nScraping chat data from: {} ({})...\n".format(
