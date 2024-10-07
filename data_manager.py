@@ -97,7 +97,7 @@ def load_df_range(dir_path, source, start_date, end_date):
                 if not file.endswith('.pkl'):
                     continue
 
-                file_start_datetime, file_end_datetime = file.replace(
+                _, file_start_datetime, file_end_datetime = file.replace(
                     '.pkl', '').split('_')
                 parsed_file_start_datetime = datetime.strptime(
                     file_start_datetime, datetime_format)
