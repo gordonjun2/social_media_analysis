@@ -1,4 +1,5 @@
 from pyrogram import Client
+import pyrogram.utils as utils
 import pandas as pd
 import os
 from datetime import datetime
@@ -7,6 +8,20 @@ from data_manager import save_df, load_df, delete_files, clean_text
 from config import TELEGRAM_API_KEY, TELEGRAM_HASH, CHAT_ID_LIST
 
 warnings.filterwarnings("ignore")
+
+
+def get_peer_type(peer_id: int) -> str:
+    print('get_peer_type call')
+    peer_id_str = str(peer_id)
+    if not peer_id_str.startswith("-"):
+        return "user"
+    elif peer_id_str.startswith("-100"):
+        return "channel"
+    else:
+        return "chat"
+
+
+utils.get_peer_type = get_peer_type
 
 
 def update_save_dataframe(dataframe, new_batch_dataframe, dir_path,
@@ -68,12 +83,11 @@ async def main(chat_id_list):
         for chat_id in chat_id_list:
             try:
                 chat_info = await app.get_chat(chat_id)
+                chat_title = chat_info.title
             except Exception as e:
-                print(
-                    "\nUnable to scraping chat data from {} ({}) due to {}...\n"
-                    .format(chat_title, chat_id, e))
+                print("\nUnable to scrape chat data from {} due to {}...\n".
+                      format(chat_id, e))
                 continue
-            chat_title = chat_info.title
 
             print("\nScraping chat data from: {} ({})...\n".format(
                 chat_title, chat_id))
