@@ -168,3 +168,6 @@ private.ini
 .DS_Store
 *.session
 *.session-journal
+
+# Private data
+**/*-PM/

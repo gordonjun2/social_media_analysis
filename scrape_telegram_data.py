@@ -89,6 +89,9 @@ async def main(chat_id_list):
                       format(chat_id, e))
                 continue
 
+            if not chat_title:
+                chat_title = 'PM'
+
             print("\nScraping chat data from: {} ({})...\n".format(
                 chat_title, chat_id))
 
