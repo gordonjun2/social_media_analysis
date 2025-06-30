@@ -3,7 +3,7 @@ import pickle
 import os
 
 # Specify the path to your .pkl file
-pkl_path = './saved_data/telegram/-4523641033-The Start of Something/comments_2024-09-20 23:39:44+00:00_2025-06-23 21:52:19+00:00.pkl'
+pkl_path = './saved_data/telegram/-4523641033-The Start of Something/comments_2024-09-20 23:39:44+00:00_2025-06-30 18:10:36+00:00.pkl'
 
 
 def load_pickle_to_dataframe(file_path):

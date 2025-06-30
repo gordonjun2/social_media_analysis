@@ -32,6 +32,8 @@ def update_save_dataframe(dataframe, new_batch_dataframe, dir_path,
                           ignore_index=True)
 
     dataframe['Comment'] = dataframe['Comment'].apply(clean_text)
+    dataframe['Reply to Comment'] = dataframe['Reply to Comment'].apply(
+        clean_text)
     dataframe = dataframe[dataframe['Comment'] != '']
     dataframe = dataframe.drop_duplicates(subset='Comment UUID')
     dataframe = dataframe.sort_values(by='Date Time',
@@ -101,7 +103,8 @@ async def main(chat_id_list):
             datetime_format = '%Y-%m-%d %H:%M:%S'
             dataframe = pd.DataFrame(columns=[
                 'Date Time', 'Comment UUID', 'Chat ID', 'Chat Title',
-                'User ID', 'Username', 'Comment'
+                'User ID', 'Username', 'Comment', 'Reply to Comment UUID',
+                'Reply to Comment'
             ])
 
             if os.path.exists(dir_path):
@@ -135,9 +138,13 @@ async def main(chat_id_list):
             }
             new_batch_dataframe = pd.DataFrame(columns=[
                 'Date Time', 'Comment UUID', 'Chat ID', 'Chat Title',
-                'User ID', 'Username', 'Comment'
+                'User ID', 'Username', 'Comment', 'Reply to Comment UUID',
+                'Reply to Comment'
             ])
             message_count = 1
+
+            # Dictionary to store pending replies across batches
+            global_pending_replies = {}
 
             async for message in app.get_chat_history(chat_id):
                 if message.date != None and message.text != None:
@@ -170,6 +177,40 @@ async def main(chat_id_list):
 
                     comment = message.text
 
+                    # Handle reply information
+                    reply_to_comment_uuid = ''
+                    reply_to_comment = ''
+                    if message.reply_to_message_id:
+                        reply_to_comment_uuid = str(chat_id) + '-' + str(
+                            message.reply_to_message_id)
+
+                        # Check if parent message exists in main dataframe
+                        parent_in_df = dataframe.loc[
+                            dataframe['Comment UUID'] == reply_to_comment_uuid,
+                            'Comment']
+                        if not parent_in_df.empty:
+                            reply_to_comment = parent_in_df.iloc[0]
+                        else:
+                            # Store in pending if parent not found
+                            if reply_to_comment_uuid not in global_pending_replies:
+                                global_pending_replies[
+                                    reply_to_comment_uuid] = []
+                            global_pending_replies[
+                                reply_to_comment_uuid].append(comment_uuid)
+
+                    # Check if this message was replied to
+                    if comment_uuid in global_pending_replies:
+                        # Update all replies to this message
+                        reply_uuids = global_pending_replies[comment_uuid]
+                        for reply_uuid in reply_uuids:
+                            reply_mask = (new_batch_dataframe['Comment UUID']
+                                          == reply_uuid)
+                            new_batch_dataframe.loc[
+                                reply_mask, 'Reply to Comment'] = comment
+
+                        # Remove from pending since we've processed it
+                        del global_pending_replies[comment_uuid]
+
                     if isinstance(message.date, str):
                         parsed_datetime = datetime.strptime(
                             message.date, datetime_format)
@@ -177,13 +218,24 @@ async def main(chat_id_list):
                         parsed_datetime = message.date
 
                     new_row = pd.DataFrame([{
-                        'Date Time': parsed_datetime,
-                        'Comment UUID': comment_uuid,
-                        'Chat ID': chat_id,
-                        'Chat Title': chat_title,
-                        'User ID': user_id,
-                        'Username': username,
-                        'Comment': comment
+                        'Date Time':
+                        parsed_datetime,
+                        'Comment UUID':
+                        comment_uuid,
+                        'Chat ID':
+                        chat_id,
+                        'Chat Title':
+                        chat_title,
+                        'User ID':
+                        user_id,
+                        'Username':
+                        username,
+                        'Comment':
+                        comment,
+                        'Reply to Comment UUID':
+                        reply_to_comment_uuid,
+                        'Reply to Comment':
+                        reply_to_comment
                     }])
                     new_batch_dataframe = pd.concat(
                         [new_batch_dataframe, new_row],
@@ -205,7 +257,8 @@ async def main(chat_id_list):
 
                         new_batch_dataframe = pd.DataFrame(columns=[
                             'Date Time', 'Comment UUID', 'Chat ID',
-                            'Chat Title', 'User ID', 'Username', 'Comment'
+                            'Chat Title', 'User ID', 'Username', 'Comment',
+                            'Reply to Comment UUID', 'Reply to Comment'
                         ])
 
                     message_count += 1
