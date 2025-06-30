@@ -164,10 +164,10 @@ def clean_text(text):
     soup = BeautifulSoup(text, 'html.parser')
     text = soup.get_text()
 
-    # 2. Remove Chinese, Japanese, and Korean characters
-    text = re.sub(
-        r'[\u4e00-\u9fff\u3400-\u4dbf\u3040-\u30ff\u31f0-\u31ff\uac00-\ud7af]+',
-        '', text)
+    # # 2. Remove Chinese, Japanese, and Korean characters
+    # text = re.sub(
+    #     r'[\u4e00-\u9fff\u3400-\u4dbf\u3040-\u30ff\u31f0-\u31ff\uac00-\ud7af]+',
+    #     '', text)
 
     # 3. Remove crypto wallet addresses (assuming alphanumeric and special characters)
     text = re.sub(r'\b[13][a-km-zA-HJ-NP-Z1-9]{25,34}\b', '',
@@ -209,9 +209,9 @@ def clean_text(text):
     # 11. Normalize text (fix any remaining encoding issues)
     text = unicodedata.normalize('NFKD', text)
 
-    # 12. Remove posts containing less than four words
-    if len(text.split()) < 3:
-        return ''
+    # # 12. Remove posts containing less than four words
+    # if len(text.split()) < 3:
+    #     return ''
 
     # 13. Final trimming of any leading/trailing spaces
     return text.strip()
